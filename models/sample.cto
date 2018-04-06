@@ -1,0 +1,109 @@
+/**
+ * Defines a data model for a Employee Management Business Network
+ */
+namespace org.hyperledger_composer.library
+
+/**
+ * Enumerated type definitions
+ */
+enum Degree {
+  o Bachelor
+  o Master
+  o Phd
+}
+
+/**
+ * Comcept definitions
+ */
+concept Address {
+    o String street
+    o String house
+    o String city
+    o String county
+    o String country
+    o String zip
+}
+
+concept Education {
+ o Degree degree 
+ o String specialization  
+ o String institution 
+}
+
+concept EmployeeSkill  {	
+ o String skill
+ o String yearsOfExperience
+}
+
+concept EmployerStatus {
+  o String currentEmployer
+  o String currentClient
+  o String previousEmployer 
+  o String previousClient  
+}
+
+concept	Client {
+  o String clientId
+  o String clientName
+  o Address headQuarters 
+  o String sector optional
+}
+
+concept	Project {
+  o String projectId
+  o String projectName
+  o Client client
+}
+
+concept	Allocation {
+  o String projectId
+  o String projectName
+  o Double allocationPercentage
+}
+
+/**
+ * Asset definitions
+ */
+asset Employee identified by employeeId {
+  o String employeeId  
+  o String[] email
+  o String firstName
+  o String lastName
+  o DateTime dob optional
+  o Address address optional
+  o String SSN optional 
+  o Education[] education
+  o Integer TotalYearsOfExperience optional
+  o EmployeeSkill[] EmployeeSkill 
+  o EmployerStatus employerStatus
+  o Allocation[] projectAllocation
+  --> Employer employer
+  --> Department department
+}
+
+/**
+ * Participant definitions
+ */
+participant Department identified by DepartmentId {
+  o String DepartmentId 
+  o String Name
+  o Project[] project
+  --> Employer employer
+}
+
+participant	Employer identified by EmployerId {
+ 		o String EmployerId
+		o String Name
+        o Address headQuarters 
+		o Project[] project 
+}
+
+/**
+ * Transaction definitions
+ */
+transaction IntraCompanyTransfer {
+}
+
+transaction InterCompanyTransfer {
+}
+
