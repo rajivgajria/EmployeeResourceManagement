@@ -1,7 +1,7 @@
 /**
  * Defines a data model for a Employee Management Business Network
  */
-namespace org.hyperledger_composer.library
+namespace org.hyperledgercomposer.erm
 
 /**
  * Enumerated type definitions
@@ -35,11 +35,15 @@ concept EmployeeSkill  {
  o String yearsOfExperience
 }
 
-concept EmployerStatus {
-  o String currentEmployer
-  o String currentClient
-  o String previousEmployer 
-  o String previousClient  
+concept EmployeeStatus {
+
+  o Employer previousEmployer
+  o DateTime previousExitDate
+  o Employer currentEmployer
+  o DateTime dateHired
+  
+  //o String previousEmployer 
+  /*o String previousClient */ 
 }
 
 concept	Client {
@@ -52,13 +56,26 @@ concept	Client {
 concept	Project {
   o String projectId
   o String projectName
-  o Client client
+  o String clientId
 }
 
 concept	Allocation {
   o String projectId
   o String projectName
   o Double allocationPercentage
+}
+
+/*
+Assuming that the Employee will be working with one client only and will have a contract with him.
+*/
+concept Contract{
+
+  o String clientId
+  o String EmployerId
+  o DateTime startDate
+  o DateTime endDate
+  //Have to revisit whether this is required or not
+  //o String[] restrictedEmployers //This can be in the contract as it is required so that the Employee does not work directly with the Competitor on the same Client 
 }
 
 /**
@@ -75,21 +92,24 @@ asset Employee identified by employeeId {
   o Education[] education
   o Integer TotalYearsOfExperience optional
   o EmployeeSkill[] EmployeeSkill 
-  o EmployerStatus employerStatus
-  o Allocation[] projectAllocation
-  --> Employer employer
-  --> Department department
+  o EmployeeStatus employeeStatus
+  //o Allocation[] projectAllocation
+  o Contract[] contract
+  //--> Employer employer
+  /*-> Department department */
 }
 
 /**
  * Participant definitions
  */
+/*
 participant Department identified by DepartmentId {
   o String DepartmentId 
   o String Name
   o Project[] project
   --> Employer employer
 }
+*/
 
 participant	Employer identified by EmployerId {
  		o String EmployerId
@@ -104,6 +124,19 @@ participant	Employer identified by EmployerId {
 transaction IntraCompanyTransfer {
 }
 
-transaction InterCompanyTransfer {
+transaction EmployeeOnBoard{
+
+
+}
+
+transaction AssignClient{
+  
+}
+
+transaction TransferEmployee {
+  --> Employee employee 
+  --> Employer futureEmployer 
+  --> Employer currentEmployer
+  o DateTime dateOfEmployeeTransfer
 }
 
